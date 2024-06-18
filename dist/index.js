@@ -36,3 +36,29 @@ const fetchUserData = (url) => {
 };
 // default func call:
 fetchUserData("https://api.github.com/users");
+// lets perform search functionalty:
+formSubmit.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const searchResult = getUsername.value.toLowerCase();
+    try {
+        const url = "https://api.github.com/users";
+        const allUserData = await myCustomFetcher(url, {});
+        const matchingUser = allUserData.filter((user) => {
+            console.log(user);
+            return user.login.toLowerCase().includes(searchResult);
+        });
+        // we need to clear the previous data:
+        main_container.innerHTML = "";
+        if (matchingUser.length > 0) {
+            main_container?.insertAdjacentHTML("beforeend", `<p class="empty-msg">No matching users found:<p/>`);
+        }
+        else {
+            for (const singleUser of matchingUser) {
+                showResultUI(singleUser);
+            }
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
